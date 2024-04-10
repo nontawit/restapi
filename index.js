@@ -7,7 +7,7 @@ app.use(express.json());
 //Connect to mongodb
 mongoose.connect('mongodb+srv://ntwitmn:ntwitmn@order.3td7vxf.mongodb.net/manageOrders', {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    // useUnifiedTopology: true
 })
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => console.error('Error connecting to MongoDB:', err));
