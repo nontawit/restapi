@@ -7,6 +7,7 @@ router.get('/', async (req, res) => {
     try {
         const order = await Order.find();
         res.json(order);
+        console.log('Get orders successfully');
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: err.message });
@@ -26,6 +27,7 @@ router.post('/', async (req, res) => {
     try {
         const newOrder = await order.save();
         res.status(201).json(newOrder);
+        console.log('POST order successfully');
     } catch (err) {
         console.log(err);
         res.status(400).json({ message: err.message });
