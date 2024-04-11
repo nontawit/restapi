@@ -1,27 +1,23 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-    customerName: {
+    cusName: {
         type: String,
         required: true
     },
-    customerAddress: {
+    cusAddress: {
         type: String,
         required: true
     },
-    customerPhone: {
+    cusPhone: {
         type: String,
         required: true
     },
-    orderQuantity: {
+    orderUnit: {
         type: Number,
         required: true
     },
-    orderDate: {
-        type: Date,
-        default: Date.now
-    },
-    deliveryDate: {
+    dateDelivery: {
         type: Date,
         required: true
     },
@@ -30,6 +26,11 @@ const orderSchema = new mongoose.Schema({
         required: true,
         default: 'Pending'
     },
+    orderDate: {
+        type: Date,
+        default: Date.now
+    },
 });
 
-module.exports = mongoose.model('Order', orderSchema);
+const Order = mongoose.model('Order',orderSchema)
+module.exports = Order;
