@@ -70,7 +70,7 @@ router.put('/:id', getOrder, async (req, res) => {
 //Delete order
 router.delete('/:id', getOrder, async (req, res) => {
     try {
-        await res.order.remove();
+        await res.order.deleteOne();
         res.json({ message: 'Order delete successfully!!'});
         console.log('Delete order successfully!!');
     } catch (err) {
