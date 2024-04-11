@@ -72,8 +72,10 @@ router.delete('/:id', getOrder, async (req, res) => {
     try {
         await res.order.remove();
         res.json({ message: 'Order delete successfully!!'});
+        console.log('Delete order successfully!!');
     } catch (err) {
         res.status(500).json({ message: err.message });
+        console.log('Error, Cannot delete order');
     }
 });
 
