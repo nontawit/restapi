@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const orderRoutes = require('./routes/orderRoutes');
+const cors = require('cors');
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.use(express.json());
+app.use(cors());
 app.use('/api/orders', orderRoutes);
 
 app.listen(PORT, () => {
