@@ -25,7 +25,7 @@ const orderSchema = new mongoose.Schema({
     orderStatus: {
         type: String,
         required: true,
-        default: 'รอดำเนินการ'
+        default: 'Pending'
     },
     orderDate: {
         type: String,
