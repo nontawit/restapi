@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
+const { check, validationResult } = require('express-validator');
 
 // Get all orders, sorted by status (Pending first)
 router.get('/', async (req, res) => {
     try {
         const orders = await Order.find().sort({ orderStatus: 1 });
         res.json(orders);
-        console.log('Get order successfully!!');
+        console.log('Get orders successfully!!');
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -42,7 +43,18 @@ router.get('/:id', getOrder, (req, res) => {
 });
 
 // POST create new order
-router.post('/', async (req, res) => {
+router.post('/', [
+    check('cusName').notEmpty().withMessage('Customer name is required'),
+    check('cusAddress').notEmpty().withMessage('Customer address is required'),
+    check('cusPhone').isMobilePhone().withMessage('Valid customer phone is required'),
+    check('orderUnit').isInt({ min: 1 }).withMessage('Order unit must be a positive integer'),
+    check('dateDelivery').matches(/^\d{2}\/\d{2}\/\d{4}$/).withMessage('Valid delivery date is required in format DD/MM/YYYY'),
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const order = new Order({
         cusName: req.body.cusName,
         cusAddress: req.body.cusAddress,
@@ -50,6 +62,7 @@ router.post('/', async (req, res) => {
         orderUnit: req.body.orderUnit,
         dateDelivery: req.body.dateDelivery,
     });
+
     try {
         const newOrder = await order.save();
         res.status(201).json(newOrder);
@@ -60,7 +73,19 @@ router.post('/', async (req, res) => {
 });
 
 // PUT update order
-router.put('/:id', getOrder, async (req, res) => {
+router.put('/:id', [
+    check('cusName').optional().notEmpty().withMessage('Customer name must not be empty'),
+    check('cusAddress').optional().notEmpty().withMessage('Customer address must not be empty'),
+    check('cusPhone').optional().isMobilePhone().withMessage('Valid customer phone is required'),
+    check('orderUnit').optional().isInt({ min: 1 }).withMessage('Order unit must be a positive integer'),
+    check('dateDelivery').optional().matches(/^\d{2}\/\d{2}\/\d{4}$/).withMessage('Valid delivery date is required in format DD/MM/YYYY'),
+    check('orderStatus').optional().isIn(['Pending', 'Success']).withMessage('Order status must be either Pending or Success'),
+], getOrder, async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     if (req.body.cusName != null) {
         res.order.cusName = req.body.cusName;
     }
@@ -79,6 +104,7 @@ router.put('/:id', getOrder, async (req, res) => {
     if (req.body.orderStatus != null) {
         res.order.orderStatus = req.body.orderStatus;
     }
+
     try {
         const updatedOrder = await res.order.save();
         res.json(updatedOrder);
@@ -92,7 +118,7 @@ router.put('/:id', getOrder, async (req, res) => {
 router.delete('/:id', getOrder, async (req, res) => {
     try {
         await res.order.deleteOne();
-        res.json({ message: 'Order delete successfully!!' });
+        res.json({ message: 'Order deleted successfully!!' });
         console.log('Delete order successfully!!');
     } catch (err) {
         res.status(500).json({ message: err.message });
