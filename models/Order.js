@@ -27,11 +27,6 @@ const orderSchema = new mongoose.Schema({
         required: true,
         default: 'Pending'
     },
-    orderDate: {
-        type: String,
-        default: () => formatDateThai(new Date()),
-        required: true
-    },
 }, { versionKey: false });
 
 function formatDateThai(date){
